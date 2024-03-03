@@ -2,36 +2,106 @@ const Block = require("./block");
 const Wallet = require("./wallet");
 
 class Blockchain {
+  static instance;
+  static chain = [];
+  static wallets = [];
+  static rewardTransactions = [];
+  static balances = {};
+
   constructor() {
-    this.chain = [Block.genesis()];
-    this.wallets = [Wallet.main()];
-    this.rewardTransactions = [];
-    this.balances = {};
+    if (!!Blockchain.instance) return Blockchain.instance;
+    Blockchain.instance = this;
+
+    Blockchain.chain.push(Block.genesis());
+    Blockchain.wallets.push(Wallet.main());
   }
 
-  latestBlock() {
-    return this.chain[this.chain.length - 1];
+  static latest_block() {
+    return Blockchain.chain[Blockchain.chain.length - 1];
   }
 
-  addWallet(names) {
-    const wallet = new Wallet(names, 0, this.wallets.length - 1 + 1);
-    this.wallets.push(wallet);
-    return wallet;
+  static wallet() {
+    return {
+      all: () => {
+        return Blockchain.wallets;
+      },
+      find: (address) => {
+        const id = Blockchain.wallets.findIndex(
+          ({ address: dir }) => dir === address
+        );
+        if (id < 0) {
+          throw new Error(
+            "This wallet does not exist or does not have permissions"
+          );
+        }
+        return Blockchain.wallets[id];
+      },
+      add: (names) => {
+        if (!names || (names && !names.length)) {
+          throw new Error("Invalid wallet!, parameter names is required");
+        }
+        const wallet = new Wallet(names, 0, Blockchain.wallets.length - 1 + 1);
+        Blockchain.wallets.push(wallet);
+        return wallet;
+      },
+      balance: (address) => {
+        const id = Blockchain.wallets.findIndex(
+          ({ address: dir }) => dir === address
+        );
+        if (id < 0) {
+          throw new Error(
+            "This wallet does not exist or does not have permissions"
+          );
+        }
+        const wallet = Blockchain.wallets[id];
+        wallet.balance = 0;
+        wallet.credit = 0;
+        wallet.debit = 0;
+
+        for (const block of Blockchain.chain) {
+          if (!block?.transaction) {
+            continue;
+          }
+          const { transaction } = block;
+          if (transaction) {
+            const { recipient, miner, sender, amount } = transaction;
+            if (recipient && recipient == address) {
+              wallet.credit += amount;
+            } else if (miner && miner?.recipient == address) {
+              wallet.credit += miner.amount;
+            } else if (sender && sender === address) {
+              wallet.debit -= amount;
+            }
+          }
+        }
+
+        wallet.balance = wallet.credit - wallet.debit;
+        Blockchain.wallets[id] = wallet;
+        Blockchain.balances[wallet.address] = wallet.balance;
+        return {
+          balance: wallet.balance,
+          credit: wallet.credit,
+          debit: wallet.debit,
+        };
+      },
+    };
   }
 
-  addBlock(address) {
-    const blockchain = this.wallets[0];
+  static mineBlock(address) {
+    const blockchain = Blockchain.wallets[0];
     if (!blockchain) {
       throw new Error("The Coin do not have been initialized correctly");
     }
-    const wallet = this.wallets.find((wallet) => wallet.address === address);
+    const wallet = Blockchain.wallets.find(
+      (wallet) => wallet.address === address
+    );
     if (!wallet) {
       throw new Error(
         "This wallet does not exist or does not have permissions"
       );
     }
 
-    const previousBlock = this.latestBlock();
+    const previousBlock = Blockchain.latest_block();
     const block = Block.mine(previousBlock, {
       miner: {
         recipient: wallet.address,
@@ -45,48 +115,38 @@ class Blockchain {
       concept: "mining",
     });
 
-    this.chain.push(block);
-    this.rewardTransaction(block);
+    Blockchain.chain.push(block);
+    Blockchain.rewardTransaction(block);
+    return block;
   }
 
-  addTransferBlock(senderAddress, recipientAddress, amount, concept) {
-    const recipient = this.wallets.find(
-      ({ address }) => address === recipientAddress
-    );
-    if (!recipient) {
-      throw new Error("The Coin do not have been initialized correctly");
-    }
-
-    const sender = this.wallets.find(
-      ({ address }) => address === senderAddress
-    );
-    if (!sender.address) {
-      throw new Error(
-        "This wallet does not exist or does not have permissions"
-      );
-    }
-
-    const previousBlock = this.latestBlock();
+  static transferBlock(sender, recipient, amount, other) {
+    const previousBlock = Blockchain.latest_block();
     const block = Block.mine(previousBlock, {
-      sender: sender.address,
-      recipient: recipient.address,
-      concept,
+      sender,
+      recipient,
       amount,
+      other,
       timestamp: Date.now(),
+      concept: "transfer",
     });
 
-    this.chain.push(block);
-    this.rewardTransactions.push(block.transaction);
+    Blockchain.chain.push(block);
+    Blockchain.rewardTransactions.push({
+      hash: block.hash,
+      ...block.transaction,
+    });
+    return block;
   }
 
-  rewardTransaction(block) {
+  static rewardTransaction(block) {
     const {
       hash,
       timestamp,
       transaction: { miner, bank },
     } = block;
 
-    this.rewardTransactions.push({
+    Blockchain.rewardTransactions.push({
       hash,
       sender: null,
       recipient: miner.recipient,
@@ -95,7 +155,7 @@ class Blockchain {
       concept: "mining",
     });
 
-    this.rewardTransactions.push({
+    Blockchain.rewardTransactions.push({
       hash,
       sender: null,
       recipient: bank.recipient,
@@ -105,8 +165,8 @@ class Blockchain {
     });
   }
 
-  getBalanceCoinDo(address) {
-    const wallet = this.wallets[0];
+  static getBalanceCoinDo() {
+    const wallet = Blockchain.wallets[0];
     if (!wallet) {
       throw new Error("The Coin do not have been initialized correctly");
     }
@@ -114,21 +174,21 @@ class Blockchain {
     wallet.credit = 0;
     wallet.debit = 0;
 
-    for (const block of this.chain) {
+    for (const block of Blockchain.chain) {
       if (!block?.transaction) {
         continue;
       }
       const { transaction } = block;
-      if (transaction.bank == address) {
+      if (transaction.bank == wallet.address) {
         wallet.credit += transaction.bank.amount;
-      } else if (transaction.sender === address) {
+      } else if (transaction.sender === wallet.address) {
         wallet.debit -= transaction.amount;
       }
     }
 
     wallet.balance = wallet.credit - wallet.debit;
-    this.wallets[id] = wallet;
-    this.balances[wallet.address] = wallet.balance;
+    Blockchain.wallets[id] = wallet;
+    Blockchain.balances[wallet.address] = wallet.balance;
     return {
       balance: wallet.balance,
       credit: wallet.credit,
@@ -136,38 +196,34 @@ class Blockchain {
     };
   }
 
-  getBalanceOfAddress(address) {
-    const id = this.wallets.findIndex(({ address: dir }) => dir === address);
-    if (id < 0) {
+  addTransferBlock(senderAddress, recipientAddress, amount, concept) {
+    const recipient = Blockchain.wallets.find(
+      ({ address }) => address === recipientAddress
+    );
+    if (!recipient) {
+      throw new Error("The Coin do not have been initialized correctly");
+    }
+
+    const sender = Blockchain.wallets.find(
+      ({ address }) => address === senderAddress
+    );
+    if (!sender.address) {
       throw new Error(
         "This wallet does not exist or does not have permissions"
       );
     }
-    const wallet = this.wallets[id];
-    wallet.balance = 0;
-    wallet.credit = 0;
-    wallet.debit = 0;
 
-    for (const block of this.chain) {
-      if (!block?.transaction) {
-        continue;
-      }
-      const { transaction } = block;
-      if (transaction.recipient && transaction.recipient == address) {
-        wallet.credit += transaction.amount;
-      } else if (transaction.sender && transaction.sender === address) {
-        wallet.debit -= transaction.amount;
-      }
-    }
+    const previousBlock = Blockchain.latest_block();
+    const block = Block.mine(previousBlock, {
+      sender: sender.address,
+      recipient: recipient.address,
+      concept,
+      amount,
+      timestamp: Date.now(),
+    });
 
-    wallet.balance = wallet.credit - wallet.debit;
-    this.wallets[id] = wallet;
-    this.balances[wallet.address] = wallet.balance;
-    return {
-      balance: wallet.balance,
-      credit: wallet.credit,
-      debit: wallet.debit,
-    };
+    Blockchain.chain.push(block);
+    Blockchain.rewardTransactions.push(block.transaction);
   }
 }
 

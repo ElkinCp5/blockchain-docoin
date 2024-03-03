@@ -29,7 +29,7 @@ class Block {
             --------------------------------------\n`;
   }
 
-  static get genesis() {
+  static genesis() {
     const timestamp = new Date().getTime();
     return new this(
       timestamp,
