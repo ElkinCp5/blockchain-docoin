@@ -70,7 +70,7 @@ class Blockchain {
             } else if (miner && miner?.recipient == address) {
               wallet.credit += miner.amount;
             } else if (sender && sender === address) {
-              wallet.debit -= amount;
+              wallet.debit += amount;
             }
           }
         }
@@ -182,7 +182,7 @@ class Blockchain {
       if (transaction.bank == wallet.address) {
         wallet.credit += transaction.bank.amount;
       } else if (transaction.sender === wallet.address) {
-        wallet.debit -= transaction.amount;
+        wallet.debit += transaction.amount;
       }
     }
 

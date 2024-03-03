@@ -41,7 +41,7 @@ WalletRouter.post("/transfer", async function (req, res) {
     const { address: recipient, amount: shipping_amount } = req.body;
     const { amount: sender_amount } = Blockchain.wallet().balance(sender);
     const { amount: recipient_amount } = Blockchain.wallet().balance(recipient);
-    if (typeof shipping_amount === "number" && shipping_amount > 0) {
+    if (typeof shipping_amount !== "number" || !shipping_amount) {
       throw new Error("The shipping amount must be greater than 0.");
     }
     if (sender_amount < shipping_amount) {
