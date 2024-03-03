@@ -1,8 +1,8 @@
 const Block = require("./block");
 
 class Wallet {
-  constructor(names, amount, index) {
-    this.address = Block.createHash(names, new Date().getTime(), index);
+  constructor(names, amount) {
+    this.address = Block.createHash(names, new Date().getTime());
     this.names = names;
     this.balance = amount | 0; // Saldo inicial
     this.credit = 0;
@@ -10,7 +10,13 @@ class Wallet {
   }
 
   static main() {
-    return this("coin do", 100000000, 0);
+    return {
+      address: Block.createHash("coin do", new Date().getTime()),
+      names: "coin do",
+      balance: 100000000,
+      credit: 0,
+      debit: 0,
+    };
   }
 }
 
