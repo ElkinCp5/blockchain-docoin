@@ -1,0 +1,179 @@
+{
+    "client": "Thunder Client",
+    "collectionName": "coin do",
+    "dateExported": "2024-03-04T00:53:24.201Z",
+    "version": "1.1",
+    "folders": [
+        {
+            "_id": "eb96bbaa-2177-4680-ab10-344c9f7b2893",
+            "name": "wallet",
+            "containerId": "",
+            "created": "2024-03-01T17:06:09.255Z",
+            "sortNum": 10000
+        },
+        {
+            "_id": "16bafc41-8c95-4f95-a3b9-befa5bb5df27",
+            "name": "auth",
+            "containerId": "",
+            "created": "2024-03-02T15:11:02.664Z",
+            "sortNum": 20000
+        },
+        {
+            "_id": "b35caf2b-85c0-48cf-98d0-77044b663e6b",
+            "name": "blockchain",
+            "containerId": "",
+            "created": "2024-03-03T23:40:12.142Z",
+            "sortNum": 30000
+        }
+    ],
+    "requests": [
+        {
+            "_id": "aff26b37-26ff-4135-b72e-f77784971777",
+            "colId": "2cb1e5c9-89ed-482a-98f1-3a529635d844",
+            "containerId": "b35caf2b-85c0-48cf-98d0-77044b663e6b",
+            "name": "mine",
+            "url": "/blockchain/mine",
+            "method": "POST",
+            "sortNum": 10000,
+            "created": "2024-03-01T17:03:27.194Z",
+            "modified": "2024-03-03T23:41:16.382Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "b99790de-8e0f-4664-b208-b30e00b0001a",
+            "colId": "2cb1e5c9-89ed-482a-98f1-3a529635d844",
+            "containerId": "16bafc41-8c95-4f95-a3b9-befa5bb5df27",
+            "name": "signin",
+            "url": "/auth/signin",
+            "method": "POST",
+            "sortNum": 10000,
+            "created": "2024-03-01T17:10:20.533Z",
+            "modified": "2024-03-02T15:24:31.218Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"wallet\": \"bd90b0c0be6823579bd14a01c4b3425556316dd7baa508a89fe6a1c4a8d12308\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "8a9b83c4-581e-4d3c-8482-b7b7cd74399d",
+            "colId": "2cb1e5c9-89ed-482a-98f1-3a529635d844",
+            "containerId": "16bafc41-8c95-4f95-a3b9-befa5bb5df27",
+            "name": "signup",
+            "url": "/auth/signup",
+            "method": "POST",
+            "sortNum": 20000,
+            "created": "2024-03-01T22:45:58.653Z",
+            "modified": "2024-03-03T23:30:19.044Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"wallet\": \"Sofia Galpa\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "f30eb0fb-7e16-438a-a016-6cd6e4b6d374",
+            "colId": "2cb1e5c9-89ed-482a-98f1-3a529635d844",
+            "containerId": "b35caf2b-85c0-48cf-98d0-77044b663e6b",
+            "name": "transfer",
+            "url": "/blockchain/transfer",
+            "method": "POST",
+            "sortNum": 20000,
+            "created": "2024-03-03T20:15:31.229Z",
+            "modified": "2024-03-03T23:41:11.336Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"address\": \"c294e9255d66fc064e1a8679aa386e495c8f37503c33ffd361e544295b3738c8\",\n  \"amount\": 1.2\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "dd1eb686-dcb8-4a78-8933-724ef0845bdd",
+            "colId": "2cb1e5c9-89ed-482a-98f1-3a529635d844",
+            "containerId": "eb96bbaa-2177-4680-ab10-344c9f7b2893",
+            "name": "all",
+            "url": "/wallets/",
+            "method": "GET",
+            "sortNum": 30000,
+            "created": "2024-03-01T17:06:26.223Z",
+            "modified": "2024-03-03T18:12:12.598Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "8c281e71-9d45-4cb9-b0b2-0ba323e42c5b",
+            "colId": "2cb1e5c9-89ed-482a-98f1-3a529635d844",
+            "containerId": "eb96bbaa-2177-4680-ab10-344c9f7b2893",
+            "name": "detail",
+            "url": "/wallets/detail",
+            "method": "GET",
+            "sortNum": 40000,
+            "created": "2024-03-01T17:07:54.111Z",
+            "modified": "2024-03-01T23:11:16.870Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "976cdc67-8f11-483a-b320-767f720be159",
+            "colId": "2cb1e5c9-89ed-482a-98f1-3a529635d844",
+            "containerId": "eb96bbaa-2177-4680-ab10-344c9f7b2893",
+            "name": "balance",
+            "url": "/wallets/balance",
+            "method": "GET",
+            "sortNum": 50000,
+            "created": "2024-03-01T17:08:51.982Z",
+            "modified": "2024-03-03T23:30:50.286Z",
+            "headers": [],
+            "params": [
+                {
+                    "name": "address",
+                    "value": "bf9cb9c5f0d4cf2834e6cc2602beec4da865a8e3dfb88c9a136b8bc950040c83",
+                    "isDisabled": true,
+                    "isPath": false
+                }
+            ],
+            "tests": []
+        },
+        {
+            "_id": "308382e2-f39a-4c6f-af73-7068bcea118e",
+            "colId": "2cb1e5c9-89ed-482a-98f1-3a529635d844",
+            "containerId": "eb96bbaa-2177-4680-ab10-344c9f7b2893",
+            "name": "transfer",
+            "url": "/blockchain/transfer",
+            "method": "POST",
+            "sortNum": 60000,
+            "created": "2024-03-04T00:52:21.680Z",
+            "modified": "2024-03-04T00:52:21.680Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"address\": \"c294e9255d66fc064e1a8679aa386e495c8f37503c33ffd361e544295b3738c8\",\n  \"amount\": 1.2\n}",
+                "form": []
+            },
+            "tests": []
+        }
+    ],
+    "settings": {
+        "auth": {
+            "type": "bearer",
+            "bearer": "eyJhbGciOiJIUzI1NiJ9.eyJhZGRyZXNzIjoiMTdlMzRhNTk1NmM0ZWY3MjY3YzBjOWRkZjkwZmI2MmUwMzY3Y2Y1ZmQ2NGVhZjNhNmI0YzI3YmE4ZDQ0N2JmMiIsImlhdCI6MTcwOTUwODQxNCwiaXNzIjoidXJuOmV4YW1wbGU6aXNzdWVyIiwiYXVkIjoidXJuOmV4YW1wbGU6YXVkaWVuY2UiLCJleHAiOjE3MDk1MTIwMTR9.UGzvR4k1VNaT910750QZFmPKUU-jJr0guEkoc92UdQE"
+        },
+        "options": {
+            "baseUrl": "http://192.168.1.49:300/api/v1"
+        }
+    }
+}
