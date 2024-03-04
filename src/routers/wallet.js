@@ -77,22 +77,4 @@ WalletRouter.post("/transfer", async function (req, res) {
   }
 });
 
-/**
- * Route handler for creating a new wallet.
- * @name POST/
- * @function
- * @memberof WalletRouter
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
- */
-WalletRouter.post("/", async function (req, res) {
-  const { names } = req.body;
-  try {
-    await Jwt.verify(req);
-    res.json({ data: Blockchain.wallet().add(names) });
-  } catch ({ message }) {
-    res.json({ error: message }).status(500);
-  }
-});
-
 module.exports = WalletRouter;

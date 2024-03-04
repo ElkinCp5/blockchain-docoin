@@ -52,7 +52,7 @@ BlockchainRouter.get("/balance", async function (req, res) {
 BlockchainRouter.post("/transfer", async function (req, res) {
   try {
     await Jwt.verify(req);
-    const { sender, recipient, amount: amount } = req.body;
+    const { sender, recipient, amount } = req.body;
 
     const { amount: sender_amount } = Blockchain.wallet().balance(sender);
     const { amount: recipient_amount } = Blockchain.wallet().balance(recipient);
