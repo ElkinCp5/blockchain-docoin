@@ -1,5 +1,5 @@
 {
-  "name": "blockchain-docoin",
+  "name": "coin-do",
   "version": "0.0.1",
   "description": "Desarrollo de una api blockchain",
   "main": "index.js",
