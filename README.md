@@ -42,7 +42,6 @@ The API provides the following endpoints:
 
 ## Wallet
 
-- `/wallets`: Get a list of all wallets.
 - `/wallets/detail`: Get details of a specific wallet.
 - `/wallets/balance`: Get the balance of a wallet.
 - `/wallets/transfer`: Transfer funds from you wallet to another.
