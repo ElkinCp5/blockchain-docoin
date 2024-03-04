@@ -2,8 +2,20 @@ const express = require("express");
 const Blockchain = require("../classes/blockchain");
 const Jwt = require("../classes/jwt");
 
+/**
+ * Router for handling authentication-related routes.
+ * @type {express.Router}
+ */
 const AuthRouter = express.Router();
 
+/**
+ * Route handler for user signup.
+ * @name POST/signup
+ * @function
+ * @memberof AuthRouter
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ */
 AuthRouter.post("/signup", async function (req, res) {
   try {
     const { wallet } = req.body;
@@ -15,6 +27,14 @@ AuthRouter.post("/signup", async function (req, res) {
   }
 });
 
+/**
+ * Route handler for user signin.
+ * @name POST/signin
+ * @function
+ * @memberof AuthRouter
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ */
 AuthRouter.post("/signin", async function (req, res) {
   try {
     const wallet = Blockchain.wallet().find(req?.body?.wallet);
